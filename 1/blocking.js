@@ -1,4 +1,4 @@
-var fs = require("fs");
+var fs = require("fs"); // fs=file system
 
 var data = fs.readFileSync('data.txt');
 
