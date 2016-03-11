@@ -27,11 +27,11 @@ buf = new Buffer('www.runoob.com')
 console.log('5.1: ')
 console.log(buf.toJSON(buf))
 
-buf = Buffer.concat([new Buffer('str1'), new Buffer(' '), new Buffer('str2')]);
-console.log("6.1: " + buf.toString());
+buf = Buffer.concat([new Buffer('str1'), new Buffer(' '), new Buffer('str2')])
+console.log("6.1: " + buf.toString())
 
-buf1 = new Buffer('ABCDE');
-buf2 = new Buffer('ABC');
+buf1 = new Buffer('ABCDE')
+buf2 = new Buffer('ABC')
 console.log("7.1: " + buf1.compare(buf2))
 console.log("7.2: " + buf1.compare(buf1))
 console.log("7.3: " + buf2.compare(buf1))
