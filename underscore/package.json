@@ -1,0 +1,11 @@
+{
+  "name": "underscore-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": " ZhangCong",
+  "license": "ISC",
+  "dependencies": {
+    "underscore": "^1.8.3"
+  }
+}
