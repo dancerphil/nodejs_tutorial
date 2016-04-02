@@ -50,12 +50,5 @@ Temporary Items
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 node_modules
 
-# re/test
-re/resolve.txt
-re/reject.txt
-
-# zhihu-api cookie
-zhihu-api/cookie
-
 # IDE
 .idea
