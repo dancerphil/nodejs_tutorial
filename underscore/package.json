@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "author": " ZhangCong",
+  "author": "dancerphil",
   "license": "ISC",
   "dependencies": {
     "underscore": "^1.8.3"
