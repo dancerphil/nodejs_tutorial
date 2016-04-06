@@ -1,4 +1,4 @@
-// This is a 
+// This is an example of Type annotations
 
 function greeter(person: string) {
 	return "Hello, " + person;
