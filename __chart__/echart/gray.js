@@ -27,23 +27,23 @@ function make(n) {
             data:foo(i)
         })
     }
+    function  foo(i, color0 = '#fff', color1 = '#111') {
+        if(i==0)return [
+            { itemStyle: { normal:{color:color0}} },
+            { itemStyle: { normal:{color:color1}} },
+        ]
+        else if(i==1)return [
+            { itemStyle: { normal:{color:color0}} },
+            { itemStyle: { normal:{color:color1}} },
+            { itemStyle: { normal:{color:color1}} },
+            { itemStyle: { normal:{color:color0}} },
+        ]
+        else {
+            var temp=foo(i-1)
+        }return temp.concat(temp)
+    }
 }
 
-function  foo(i) {
-    if(i==0)return [
-        { itemStyle: { normal:{color:'#fff'}} },
-        { itemStyle: { normal:{color:'#000'}} },
-    ]
-    else if(i==1)return [
-        { itemStyle: { normal:{color:'#fff'}} },
-        { itemStyle: { normal:{color:'#000'}} },
-        { itemStyle: { normal:{color:'#000'}} },
-        { itemStyle: { normal:{color:'#fff'}} },
-    ]
-    else {
-        var temp=foo(i-1)
-    }return temp.concat(temp)
-}
 
 // 使用刚指定的配置项和数据显示图表。
 myChart.setOption(option);
