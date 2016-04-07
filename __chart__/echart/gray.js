@@ -12,11 +12,13 @@ var option = {
     },
     series: []
 }
-for(var i = 0; i < 4; i++){
-    option.series.push({
+make(8)
+function make(n) {
+    for(var i = 0; i < n; i++){
+        option.series.push({
             type:'pie',
             selectedMode: 'single',
-            radius: [i+'0%', i+1+'0%'],
+            radius: [i/n*90+'%', (i+1)/n*90+'%'],
             label: {
                 normal: {
                     position: 'inner'
@@ -24,7 +26,9 @@ for(var i = 0; i < 4; i++){
             },
             data:foo(i)
         })
+    }
 }
+
 function  foo(i) {
     if(i==0)return [
         { itemStyle: { normal:{color:'#fff'}} },
