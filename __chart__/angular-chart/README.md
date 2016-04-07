@@ -2,7 +2,7 @@ npm install -g bower
 
 git --version
 
-bower install angular-chart --save
+bower install angular-chart.js --save
 
 [Angular Chart Getting started](http://jtblin.github.io/angular-chart.js/)
 
