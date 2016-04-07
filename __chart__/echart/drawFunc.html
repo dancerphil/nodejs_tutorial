@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<title>ECharts</title>
+	<!-- 引入 echarts.js -->
+	<script src="node_modules/echarts/dist/echarts.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 600px;height:400px;margin: 0 auto;"></div>
+<div style="width: 1000px;margin: 0 auto;"><hr>
+<form class="form-horizontal" role="form">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">函数</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="func" value="Math.random()"
+			       placeholder="输入函数">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">定义域最小值</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="rangeMin" value="-10"
+			       placeholder="输入rangeMin">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">定义域最大值</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="rangeMax" value="10"
+			       placeholder="输入rangeMax">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">步长</label>
+		<div class="col-sm-10">
+			<input type="text" class="form-control" id="rangeStep" value="0.1"
+			       placeholder="输入rangeStep">
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<input type="button" class="btn btn-default" id="but" value="GO!"/>
+		</div>
+	</div>
+</form></div>
+<script src="drawFunc.js"></script>
+</body>
+</html>
