@@ -1,7 +1,7 @@
 
-
 function drawFunc() {
 	var func = document.getElementById('func').value
+	console.log(func)
 	var rangeMin = +document.getElementById('rangeMin').value
 	var rangeMax = +document.getElementById('rangeMax').value
 	var rangeStep = +document.getElementById('rangeStep').value
@@ -11,18 +11,18 @@ function drawFunc() {
 window.onload=drawFunc
 document.getElementById('but').onclick = drawFunc
 
-function draw(func="Math.random()",rangeMin=-10,rangeMax=10,rangeStep=0.1) {
+function draw(func,rangeMin=-10,rangeMax=10,rangeStep=0.1) {
 	function fixNumber(i){
 		return new Number(i).toFixed(3)-0
 	}
 	var myChart = echarts.init(document.getElementById('main'));
-	var x = [];
+	var xs = [];
 
 	var data = [];
 
-	for (var i = fixNumber(rangeMin); i < rangeMax; i=fixNumber(i+rangeStep)) {
-		x.push(i);
-		data.push(eval(func));
+	for (var x = fixNumber(rangeMin); x < rangeMax; x=fixNumber(x+rangeStep)) {
+		xs.push(x);
+		data.push(fixNumber(eval(func)));
 	}
 
 	option = {
@@ -49,7 +49,7 @@ function draw(func="Math.random()",rangeMin=-10,rangeMax=10,rangeStep=0.1) {
 		xAxis: {
 			type: 'category',
 			boundaryGap: false,
-			data: x
+			data: xs
 		},
 		yAxis: {
 			type: 'value',
