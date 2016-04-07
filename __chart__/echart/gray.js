@@ -1,12 +1,8 @@
 
 // 基于准备好的dom，初始化echarts实例
 var myChart = echarts.init(document.getElementById('main'));
-
-// 指定图表的配置项和数据
 var option = {
-    backgroundColor: '#2c343c',
-
-    tooltip: {
+    backgroundColor: '#4c545c',tooltip: {
         trigger: 'item',
         formatter: "{a} <br/>{b}: {c} ({d}%)"
     },
@@ -14,85 +10,36 @@ var option = {
         orient: 'vertical',
         x: 'left',
     },
-    series: [
-        {
+    series: []
+}
+for(var i = 0; i < 4; i++){
+    option.series.push({
             type:'pie',
             selectedMode: 'single',
-            radius: [0, '10%'],
+            radius: [i+'0%', i+1+'0%'],
             label: {
                 normal: {
                     position: 'inner'
                 }
             },
-            data:[
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-            ]
-        },{
-            type:'pie',
-            selectedMode: 'single',
-            radius: ['10%', '20%'],
-            label: {
-                normal: {
-                    position: 'inner'
-                }
-            },
-            data:[
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-            ]
-        },{
-            type:'pie',
-            selectedMode: 'single',
-            radius: ['20%', '30%'],
-            label: {
-                normal: {
-                    position: 'inner'
-                }
-            },
-            data:[
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-            ]
-        },{
-            type:'pie',
-            selectedMode: 'single',
-            radius: ['30%', '40%'],
-            label: {
-                normal: {
-                    position: 'inner'
-                }
-            },
-            data:[
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#000'}} },
-                { itemStyle: { normal:{color:'#fff'}} },
-            ]
-        },
-
+            data:foo(i)
+        })
+}
+function  foo(i) {
+    if(i==0)return [
+        { itemStyle: { normal:{color:'#fff'}} },
+        { itemStyle: { normal:{color:'#000'}} },
     ]
-};
+    else if(i==1)return [
+        { itemStyle: { normal:{color:'#fff'}} },
+        { itemStyle: { normal:{color:'#000'}} },
+        { itemStyle: { normal:{color:'#000'}} },
+        { itemStyle: { normal:{color:'#fff'}} },
+    ]
+    else {
+        var temp=foo(i-1)
+    }return temp.concat(temp)
+}
 
 // 使用刚指定的配置项和数据显示图表。
 myChart.setOption(option);
