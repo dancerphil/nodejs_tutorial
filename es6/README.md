@@ -1,0 +1,1 @@
+[深入浅出ES6](http://www.infoq.com/cn/es6-in-depth/)
