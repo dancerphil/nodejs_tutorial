@@ -55,3 +55,8 @@ __0.1.0__
 Copyright (c) 2015
 
 Licensed under the [MIT license](LICENSE).
+
+---
+# If you want to use feathers
+
+[Quick Start](http://docs.feathersjs.com/getting-started/quick-start.html)
