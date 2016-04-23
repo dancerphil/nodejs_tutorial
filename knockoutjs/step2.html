@@ -1,16 +1,16 @@
-<!-- This is a *view* - HTML markup that defines the appearance of your UI -->
 
 <p>First name: <strong data-bind="text: firstName">todo</strong></p>
 <p>Last name: <strong data-bind="text: lastName">todo</strong></p>
 
+<p>First name: <input data-bind="value: firstName" /></p>
+<p>Last name: <input data-bind="value: lastName" /></p>
+
 <script src = 'node_modules\knockout\build\output\knockout-latest.js'></script>
 <script>
-	// This is a simple *viewmodel* - JavaScript that defines the data and behavior of your UI
 	function AppViewModel() {
-		this.firstName = "Bert";
-		this.lastName = "Bertington";
+		this.firstName = ko.observable("Bert");
+		this.lastName = ko.observable("Bertington");
 	}
 
-	// Activates knockout.js
 	ko.applyBindings(new AppViewModel());
 </script>
