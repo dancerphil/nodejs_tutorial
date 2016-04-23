@@ -1,16 +1,19 @@
 
-<p>First name: <strong data-bind="text: firstName"></strong></p>
-<p>Last name: <strong data-bind="text: lastName"></strong></p>
-
 <p>First name: <input data-bind="value: firstName" /></p>
 <p>Last name: <input data-bind="value: lastName" /></p>
+
+<p>Full name: <strong data-bind="text: fullName">todo</strong></p>
+
 
 <script src = 'node_modules\knockout\build\output\knockout-latest.js'></script>
 <script>
 	function AppViewModel() {
 		this.firstName = ko.observable("Bert");
 		this.lastName = ko.observable("Bertington");
-	}
+		this.fullName = ko.computed(function() {
+			return this.firstName() + " " + this.lastName();
+		}, this);
 
+	}
 	ko.applyBindings(new AppViewModel());
 </script>
