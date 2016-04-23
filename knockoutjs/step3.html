@@ -13,7 +13,6 @@
 		this.fullName = ko.computed(function() {
 			return this.firstName() + " " + this.lastName();
 		}, this);
-
 	}
 	ko.applyBindings(new AppViewModel());
 </script>
