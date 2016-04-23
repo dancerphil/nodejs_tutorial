@@ -1,0 +1,14 @@
+{
+  "name": "knockoutjs",
+  "version": "1.0.0",
+  "description": "[视频](https://channel9.msdn.com/Events/MIX/MIX11/FRM08)",
+  "main": "step1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "knockout": "^3.4.0"
+  }
+}
