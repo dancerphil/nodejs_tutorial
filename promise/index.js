@@ -8,10 +8,12 @@ p.then((s)=>{
 
 function timeout(ms) {
   return new Promise((resolve) => {
-    setTimeout(resolve, ms);
+    setTimeout(function foo(){
+  		resolve(456)
+  	}, ms);
   });
 }
 
-timeout(100).then(() => {
-  console.log('done');
+timeout(100).then((e) => {
+  console.log('done'+e);
 });
