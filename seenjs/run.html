@@ -1,0 +1,67 @@
+<html>
+<head>
+	<title>Hello, World! | seen.js</title>
+	<link href="http://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+	<link href="css/theme.css" rel="stylesheet" type="text/css">
+	<script src="lib/seen.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.7.1/coffee-script.min.js"></script>
+</head>
+<body>
+<div class="page">
+	<canvas width="900" height="500" id="seen-canvas"></canvas>
+	<script type="text/coffeescript" id="code">
+		width = 900
+		height = 500
+
+# Create sphere shape with randomly colored surfaces
+		
+		shape = seen.Shapes.unitcube()
+		.scale(1, 1 + 5*Math.random(), 1)
+		.translate(
+			Math.round((2*Math.random()-1)*width*0.5/40)
+			0
+			Math.round(Math.random()*-width/40 + 4)
+		)
+		.scale(40)
+		.bake()
+		shape.fill new seen.Material seen.Colors.hsl(0, 0, Math.random())
+
+		group = shape
+
+#		model = seen.Models.default().rotx(Math.PI*0.1).translate(0,-100,0)
+#		group = model.append()
+#		for i in [0...100]
+#			group.add(generateShape())
+
+		seen.Colors.randomSurfaces2(group)
+
+# Create scene and add shape to model
+		scene = new seen.Scene
+			model: seen.Models.default().add(group)
+			viewport: seen.Viewports.center(width, height)
+
+# Create render context from canvas
+		context = seen.Context('seen-canvas', scene).render()
+
+## Slowly rotate sphere
+#		context.animate()
+#		.onBefore((t, dt) -> group.rotx(dt * 1e-4).roty(0.7 * dt * 1e-4))
+#		.start()
+
+# Enable drag-to-rotate on the canvas
+		dragger = new seen.Drag('seen-canvas', {inertia : true})
+		.on('drag.rotate', (e) ->
+			group.roty(e.offsetRelative[0]*1e-2)
+			context.render()
+		)
+		.on('dragStart.enabler', ->
+			dofEnabled = false
+		)
+		.on('dragEndInertia.enabler', ->
+			dofEnabled = true
+			context.render()
+		)
+	</script>
+</div>
+</body>
+</html>
