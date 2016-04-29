@@ -1,0 +1,14 @@
+{
+  "name": "promise",
+  "version": "1.0.0",
+  "description": "[Promise对象](https://wohugb.gitbooks.io/ecmascript-6/content/docs/promise.html)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "q": "^1.4.1"
+  }
+}
