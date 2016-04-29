@@ -4,7 +4,7 @@ var Datastore = require('nedb')
 db.loadDatabase();
 
 io.listen(80)
-io.sockets.use(function(socket, next) {
+io.use(function(socket, next) {
 	console.log("in use")
 	db.count({}, function (err, count) {
 		console.log('db count: '+count)
@@ -19,4 +19,4 @@ io.sockets.use(function(socket, next) {
 		console.log(data)
 	})
 })
-console.log('The bus socket service listen on port ' + 80);
+console.log('The socket service listen on port ' + 80);

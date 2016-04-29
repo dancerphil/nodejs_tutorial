@@ -11,4 +11,4 @@ io.sockets.use(function(socket, next) {
     	console.log(data);
 	})
 })
-console.log('The bus socket service listen on port ' + 80);
+console.log('The socket service listen on port ' + 80);
