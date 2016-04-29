@@ -1,0 +1,605 @@
+<html><head>
+  <title>2048 | seen.js</title>
+  
+  <link href="http://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+  
+  <link href="css/theme.css" rel="stylesheet" type="text/css">
+  
+  
+  <script src="lib/seen.min.js"></script>
+  
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.7.1/coffee-script.min.js"></script>
+  
+</head>
+<body>
+  <div class="page">
+    <h1>2048</h1>
+    <h4></h4>
+
+        <div class="nav-bar">
+      <div class="nav-button-wrapper" style="text-align : left;">
+        
+          <a href="demo-mocap.html"><div class="nav-button">
+          <div class="label">prev</div><div class="title">Mocap-Driven Skeleton</div>
+          </div></a>
+        
+      </div>
+      <div class="nav-button-wrapper" style="text-align : center;">
+          <a href="index.html"><div class="nav-button">
+          <div class="label">up</div><div class="title">to index</div>
+          </div></a>
+      </div>
+      <div class="nav-button-wrapper" style="text-align : right;">
+        
+      </div>
+    </div>
+
+    
+  <style>
+    .bar-2048 {
+      text-align       : center;
+      background-color : #bbada0;
+      font-size        : 14px;
+      color            : #eee4da;
+    }
+
+    .message {
+      display        : inline-block;
+      vertical-align : middle;
+      color          : white;
+      height         : 40px;
+      font-size      : 18px;
+      margin         : 10px 20px 10px 20px;
+    }
+
+    .message-title {
+      color      : #eee4da;
+      font-size  : 12px;
+    }
+
+    .button {
+      display               : inline-block;
+      cursor                : pointer;
+      width                 : 150px;
+      height                : 40px;
+      line-height           : 40px;
+      background-color      : #8f7a66;
+      color                 : #f9f6f2;
+
+      -webkit-border-radius : 5px;
+      -moz-border-radius    : 5px;
+      border-radius         : 5px;
+    }
+
+    #game-message {
+      line-height: 40px;
+    }
+
+    #toggle-nausea{
+      float            : right;
+      margin-top       : 10px;
+      margin-right     : 10px;
+      background-color : transparent;
+    }
+
+    .color-sample {
+      display : inline-block;
+      width   : 50px;
+      height  : 50px;
+      margin  : 10px 5px 10px 5px;
+    }
+  </style>
+
+  <div class="bar-2048">
+    <div id="game-message" class="message"></div>
+    <div class="button keep-playing-button" style="display: none;">KEEP PLAYING</div>
+    <div class="button restart-button">RESTART</div>
+    <div class="button retry-button" style="display: none;">RETRY</div>
+    <div class="message"><div class="message-title">SCORE</div><div id="score">0</div></div>
+    <div class="button" id="toggle-nausea">TOGGLE NAUSEA</div>
+  </div>
+
+  <canvas width="900" height="500" id="seen-canvas" class="game-container"></canvas>
+
+  <div class="bar-2048">
+    <div class="color-sample" style="background-color: rgb(255, 255, 255);"></div><div class="color-sample" style="background-color: rgb(255, 255, 0);"></div><div class="color-sample" style="background-color: rgb(154, 205, 50);"></div><div class="color-sample" style="background-color: rgb(47, 170, 47);"></div><div class="color-sample" style="background-color: rgb(32, 178, 170);"></div><div class="color-sample" style="background-color: rgb(16, 136, 255);"></div><div class="color-sample" style="background-color: rgb(123, 104, 238);"></div><div class="color-sample" style="background-color: rgb(153, 50, 204);"></div><div class="color-sample" style="background-color: rgb(128, 0, 128);"></div><div class="color-sample" style="background-color: rgb(139, 0, 0);"></div><div class="color-sample" style="background-color: rgb(51, 51, 51);"></div><div class="color-sample"></div>
+  </div>
+
+  <div class="bar-2048" style="padding-bottom: 10px;">
+    Implemented using <a href="https://github.com/gabrielecirulli">Gabriele Cirulli's</a> 2048.
+  </div>
+
+
+
+    <div class="caption">
+    
+    
+    </div>
+
+    
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.legacy.js"></script>
+
+<!--
+  2048 libs
+  https://github.com/gabrielecirulli/2048
+-->
+<script src="lib/2048/bind_polyfill.js"></script>
+<script src="lib/2048/classlist_polyfill.js"></script>
+<script src="lib/2048/animframe_polyfill.js"></script>
+<script src="lib/2048/keyboard_input_manager.js"></script>
+<script src="lib/2048/grid.js"></script>
+<script src="lib/2048/tile.js"></script>
+<script src="lib/2048/local_storage_manager.js"></script>
+<script src="lib/2048/game_manager.js"></script>
+
+<script type="text/coffeescript" id="code">
+  # The size of the game. In this case, a 4-by-4 grid
+  SIZE = 5
+
+  # The 11 colors defining the "2^N" values
+  COLORS = [
+    '#ffffff'
+    '#ffff00'
+    '#9aCD32'
+    '#2faa2f'
+    '#20B2AA'
+    '#1088fF'
+    '#7b68ee'
+    '#9932cc'
+    '#800080'
+    '#8b0000'
+    '#333333'
+  ]
+
+  # Define the materials for the tile levels
+  MATERIALS = {}
+  for color, i in COLORS
+    color = seen.Colors.hex color
+    color.a = 0xB8 # add some transparency
+    MATERIALS[1 << (1 + i)] = new seen.Material color
+
+  # Update the swatch legend
+  $('.color-sample').each (i, e) ->
+    $(e).css 'background-color', COLORS[i]
+
+  # Returns a new seen.Shape representing a tile
+  SHAPE_FACTORY =  (value) ->
+    adjust = 0.05
+
+    # Up to 2048 (2^11) we use rectangles
+    if value <= (1 << 11)
+      shape = seen.Shapes.rectangle(seen.P(adjust,adjust,adjust), seen.P(1 - adjust, 1 - adjust, 0.25))
+
+    # From 2^11 to 2^22 we use triangular prisms
+    else if value <= (1 << 22)
+      y = 1 - adjust
+      tri = [seen.P(adjust,y,adjust), seen.P(0.5,y,0.25), seen.P(1-adjust,y,adjust)]
+      shape = seen.Shapes.extrude(tri, seen.P(0, -1 + 2*adjust,0))
+
+    # From 2^22 and beyond we use pyramid
+    else
+      shape = seen.Shapes.pyramid()
+      transform = seen.M().rotx(Math.PI/2).translate(0,1,0).scale(1,1,0.25)
+      shape.eachSurface (s) -> s.points.forEach (p) -> p.transform(transform)
+
+    # Bring down value into color scales range
+    while value > (1 << 11)
+      value >>= 11
+
+    shape.fill MATERIALS[value]
+    return shape
+
+  # This method interpolates between position0 and position1 then places
+  # the shape at that position.
+  PLACE = (shape, position0, position1, t = 0) ->
+    t = 1 if t > 1
+    if position1?
+      x = (position1.x * t) + (position0.x * (1.0 - t))
+      y = (position1.y * t) + (position0.y * (1.0 - t))
+      z = ((position1.z ? 0) * t) + ((position0.z ? 0) * (1.0 - t))
+    else
+      x = position0.x
+      y = position0.y
+      z = position0.z ? 0
+    shape.reset().translate(x, SIZE - y - 1, z)
+
+  # The transition for when a new tile is added
+  class NewTransition extends seen.Transition
+    firstFrame : ->
+      @start = {x : @tile.x, y : @tile.y, z : 1}
+      @model.add(@shape)
+
+    frame : ->
+      PLACE(@shape, @start, @tile, @tFrac)
+
+    lastFrame : ->
+      PLACE(@shape, @tile)
+
+  # The transition for when a tile is simply moved
+  class MoveTransition extends seen.Transition
+    frame : ->
+      PLACE(@shape, @tile.previousPosition, @tile, @tFrac)
+
+  # The transition for when two tiles are merged into one
+  class MergeTransition extends seen.Transition
+    frame : ->
+      PLACE(@shape0, @tile.mergedFrom[0].previousPosition, @tile, @tFrac)
+      PLACE(@shape1, @tile.mergedFrom[1].previousPosition, @tile, @tFrac)
+
+    lastFrame : ->
+      PLACE(@shape, @tile)
+      @model.remove(@shape0, @shape1)
+      @model.add(@shape)
+
+  SCALE = 400 / SIZE
+
+  # This is our implementation of the HTMLActuator interface from the original
+  # 2048 library by https://github.com/gabrielecirulli.
+  class SeenActuator
+    constructor : ->
+      # Create a scene
+      @scene = new seen.Scene
+        cullBackfaces    : false
+        fractionalPoints : true
+        model            : new seen.Model().scale(SCALE).rotx(-0.5)
+        viewport         : seen.Viewports.center(900, 500)
+
+      # Add some lights
+      @scene.model.add seen.Lights.point
+        point     : seen.P(-1, 2, 2).multiply(8)
+        intensity : 0.0025
+
+      @scene.model.add seen.Lights.ambient
+        intensity : 0.0015
+
+      # Append a submodel to create a tree of transforms
+      @subModel = @scene.model.append()
+        .translate(-SIZE/2,-SIZE/2 + 0.5)
+        .bake() # bake in transformation so that later .reset() will return to this state
+
+      # Create the shapes for the board
+      [0...SIZE].map (x) => [0...SIZE].map (y) =>
+        # Light inside piece
+        shape = seen.Shapes.rectangle(seen.P(0.05, 0.05, -0.01), seen.P(0.95, 0.95, 0.0)).translate(x, y)
+        shape.fill new seen.Material seen.Colors.hex '#c8bbb0'
+        @subModel.add(shape)
+
+        # Background board
+        shape = seen.Shapes.rectangle(seen.P(0, 0, -0.4), seen.P(1, 1, -0.02)).translate(x, y)
+        shape.fill new seen.Material seen.Colors.hex '#bbada0'
+        @subModel.add(shape)
+
+      # Create a context with a fill layer and the scene layer
+      @context = seen.Context('seen-canvas')
+      @context.layer(new seen.FillLayer(900, 500, '#faf8ef'))
+      @context.sceneLayer(@scene)
+
+      # Slowly rock the board back and forth, cuz why not? It is THREEEE-DEEEEE!!!
+      doRotate = true
+      animator = @context.animate().start()
+      animator.onBefore (t, dt) =>
+        @subModel.reset()
+        if doRotate then @subModel.rotz(Math.sin(t*3e-4) / 10)
+
+      $('#toggle-nausea').click => doRotate = not doRotate
+
+      # Initialize the transition animator
+      @transitions = new seen.TransitionAnimator().start()
+
+      # Initialize game models
+      @restartGame()
+      @continueGame()
+
+    # We had to modify the 2048 game manager to invoke this method on restart.
+    # The original game assumes that we can rebuild the entire board on every
+    # actuate(). However, in our case, we must store the shapes between calls,
+    # so this method allows us to clean up when a game is restarted.
+    restartGame : ->
+      if @gridModel? then @subModel.remove(@gridModel)
+      @gridModel = @subModel.append()
+      @grid = @_emptyGridState()
+
+    # Invoked on a restart, retry, or page load.
+    continueGame : ->
+      $('#game-message').text ''
+      $('.retry-button').hide()
+      $('.keep-playing-button').hide()
+      $('.restart-button').show()
+
+    # Invoked on user interaction / game state update
+    actuate : (grid, metadata) ->
+
+      nextGrid = @_emptyGridState()
+
+      for column in grid.cells
+        for tile in column
+          continue unless tile?
+
+          # Make a copy of the tile so we can store it inside the transition
+          tile = _.clone tile
+
+          # Transition an exiting tile that has moved
+          if tile.previousPosition?
+            nextGrid[tile.x][tile.y] = shape = @_getShape(tile.previousPosition)
+            @transitions.add new MoveTransition {model : @gridModel, tile, shape}
+
+          # Transition two existing tiles merged into one
+          else if tile.mergedFrom?
+            shape0 = @_getShape(tile.mergedFrom[0].previousPosition)
+            shape1 = @_getShape(tile.mergedFrom[1].previousPosition)
+            nextGrid[tile.x][tile.y] = shape = SHAPE_FACTORY(tile.value)
+            @transitions.add new MergeTransition {model : @gridModel, tile, shape, shape0, shape1}
+
+          # Transition a new tile
+          else
+            nextGrid[tile.x][tile.y] = shape = SHAPE_FACTORY(tile.value)
+            @transitions.add new NewTransition {model : @gridModel, tile, shape}
+
+      @grid = nextGrid
+      @transitions.keyframe()
+
+      # Update score and game end conditions
+      $('#score').text metadata.score
+
+      if metadata.terminated
+        if metadata.over
+          $('#game-message').text 'You lose =('
+        else if metadata.won
+          $('#game-message').text 'You WIN! =D'
+          $('.keep-playing-button').show()
+
+    # Returns a 2-dimensional array for storing game tile shapes
+    _emptyGridState : -> [0...SIZE].map (x) -> [0...SIZE].map (y) -> null
+
+    # Return the seen.Shape at the coordinates in the current grid state
+    _getShape : (position) -> @grid[position.x][position.y]
+
+  # Initialize the 2048 game manager
+  window.requestAnimationFrame () ->
+    new GameManager(SIZE, KeyboardInputManager, SeenActuator, LocalStorageManager)
+
+</script>
+
+
+    
+    <link href="http://yandex.st/highlightjs/8.0/styles/monokai_sublime.min.css" rel="stylesheet" type="text/css">
+<script src="http://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+<pre><code id="code-view" class=" hljs coffeescript hljs ">
+  <span class="hljs-comment"># The size of the game. In this case, a 4-by-4 grid</span>
+  SIZE = <span class="hljs-number">4</span>
+
+  <span class="hljs-comment"># The 11 colors defining the "2^N" values</span>
+  COLORS = [
+    <span class="hljs-string">'#ffffff'</span>
+    <span class="hljs-string">'#ffff00'</span>
+    <span class="hljs-string">'#9aCD32'</span>
+    <span class="hljs-string">'#2faa2f'</span>
+    <span class="hljs-string">'#20B2AA'</span>
+    <span class="hljs-string">'#1088fF'</span>
+    <span class="hljs-string">'#7b68ee'</span>
+    <span class="hljs-string">'#9932cc'</span>
+    <span class="hljs-string">'#800080'</span>
+    <span class="hljs-string">'#8b0000'</span>
+    <span class="hljs-string">'#333333'</span>
+  ]
+
+  <span class="hljs-comment"># Define the materials for the tile levels</span>
+  MATERIALS = {}
+  <span class="hljs-keyword">for</span> color, i <span class="hljs-keyword">in</span> COLORS
+    color = seen.Colors.hex color
+    color.a = <span class="hljs-number">0xB8</span> <span class="hljs-comment"># add some transparency</span>
+    MATERIALS[<span class="hljs-number">1</span> &lt;&lt; (<span class="hljs-number">1</span> + i)] = <span class="hljs-keyword">new</span> seen.Material color
+
+  <span class="hljs-comment"># Update the swatch legend</span>
+  $<span class="hljs-function"><span class="hljs-params">(<span class="hljs-string">'.color-sample'</span>)</span>.<span class="hljs-title">each</span> <span class="hljs-params">(i, e)</span> -&gt;</span>
+    $(e).css <span class="hljs-string">'background-color'</span>, COLORS[i]
+
+  <span class="hljs-comment"># Returns a new seen.Shape representing a tile</span>
+  <span class="hljs-function"><span class="hljs-title">SHAPE_FACTORY</span> =  <span class="hljs-params">(value)</span> -&gt;</span>
+    adjust = <span class="hljs-number">0.05</span>
+
+    <span class="hljs-comment"># Up to 2048 (2^11) we use rectangles</span>
+    <span class="hljs-keyword">if</span> value &lt;= (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">11</span>)
+      shape = seen.Shapes.rectangle(seen.P(adjust,adjust,adjust), seen.P(<span class="hljs-number">1</span> - adjust, <span class="hljs-number">1</span> - adjust, <span class="hljs-number">0.25</span>))
+
+    <span class="hljs-comment"># From 2^11 to 2^22 we use triangular prisms</span>
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> value &lt;= (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">22</span>)
+      y = <span class="hljs-number">1</span> - adjust
+      tri = [seen.P(adjust,y,adjust), seen.P(<span class="hljs-number">0.5</span>,y,<span class="hljs-number">0.25</span>), seen.P(<span class="hljs-number">1</span>-adjust,y,adjust)]
+      shape = seen.Shapes.extrude(tri, seen.P(<span class="hljs-number">0</span>, -<span class="hljs-number">1</span> + <span class="hljs-number">2</span>*adjust,<span class="hljs-number">0</span>))
+
+    <span class="hljs-comment"># From 2^22 and beyond we use pyramid</span>
+    <span class="hljs-keyword">else</span>
+      shape = seen.Shapes.pyramid()
+      transform = seen.M().rotx(Math.PI/<span class="hljs-number">2</span>).translate(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>).scale(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0.25</span>)
+      shape.eachSurface <span class="hljs-function"><span class="hljs-params">(s)</span> -&gt;</span> s.points.forEach <span class="hljs-function"><span class="hljs-params">(p)</span> -&gt;</span> p.transform(transform)
+
+    <span class="hljs-comment"># Bring down value into color scales range</span>
+    <span class="hljs-keyword">while</span> value &gt; (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">11</span>)
+      value &gt;&gt;= <span class="hljs-number">11</span>
+
+    shape.fill MATERIALS[value]
+    <span class="hljs-keyword">return</span> shape
+
+  <span class="hljs-comment"># This method interpolates between position0 and position1 then places</span>
+  <span class="hljs-comment"># the shape at that position.</span>
+  <span class="hljs-function"><span class="hljs-title">PLACE</span> = <span class="hljs-params">(shape, position0, position1, t = <span class="hljs-number">0</span>)</span> -&gt;</span>
+    t = <span class="hljs-number">1</span> <span class="hljs-keyword">if</span> t &gt; <span class="hljs-number">1</span>
+    <span class="hljs-keyword">if</span> position1?
+      x = (position1.x * t) + (position0.x * (<span class="hljs-number">1.0</span> - t))
+      y = (position1.y * t) + (position0.y * (<span class="hljs-number">1.0</span> - t))
+      z = ((position1.z ? <span class="hljs-number">0</span>) * t) + ((position0.z ? <span class="hljs-number">0</span>) * (<span class="hljs-number">1.0</span> - t))
+    <span class="hljs-keyword">else</span>
+      x = position0.x
+      y = position0.y
+      z = position0.z ? <span class="hljs-number">0</span>
+    shape.reset().translate(x, SIZE - y - <span class="hljs-number">1</span>, z)
+
+  <span class="hljs-comment"># The transition for when a new tile is added</span>
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NewTransition</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">seen</span>.<span class="hljs-title">Transition</span></span>
+    firstFrame :<span class="hljs-function"> -&gt;</span>
+      <span class="hljs-property">@start</span> = {x : <span class="hljs-property">@tile</span>.x, y : <span class="hljs-property">@tile</span>.y, z : <span class="hljs-number">1</span>}
+      <span class="hljs-property">@model</span>.add(<span class="hljs-property">@shape</span>)
+
+    frame :<span class="hljs-function"> -&gt;</span>
+      PLACE(<span class="hljs-property">@shape</span>, <span class="hljs-property">@start</span>, <span class="hljs-property">@tile</span>, <span class="hljs-property">@tFrac</span>)
+
+    lastFrame :<span class="hljs-function"> -&gt;</span>
+      PLACE(<span class="hljs-property">@shape</span>, <span class="hljs-property">@tile</span>)
+
+  <span class="hljs-comment"># The transition for when a tile is simply moved</span>
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MoveTransition</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">seen</span>.<span class="hljs-title">Transition</span></span>
+    frame :<span class="hljs-function"> -&gt;</span>
+      PLACE(<span class="hljs-property">@shape</span>, <span class="hljs-property">@tile</span>.previousPosition, <span class="hljs-property">@tile</span>, <span class="hljs-property">@tFrac</span>)
+
+  <span class="hljs-comment"># The transition for when two tiles are merged into one</span>
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MergeTransition</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">seen</span>.<span class="hljs-title">Transition</span></span>
+    frame :<span class="hljs-function"> -&gt;</span>
+      PLACE(<span class="hljs-property">@shape0</span>, <span class="hljs-property">@tile</span>.mergedFrom[<span class="hljs-number">0</span>].previousPosition, <span class="hljs-property">@tile</span>, <span class="hljs-property">@tFrac</span>)
+      PLACE(<span class="hljs-property">@shape1</span>, <span class="hljs-property">@tile</span>.mergedFrom[<span class="hljs-number">1</span>].previousPosition, <span class="hljs-property">@tile</span>, <span class="hljs-property">@tFrac</span>)
+
+    lastFrame :<span class="hljs-function"> -&gt;</span>
+      PLACE(<span class="hljs-property">@shape</span>, <span class="hljs-property">@tile</span>)
+      <span class="hljs-property">@model</span>.remove(<span class="hljs-property">@shape0</span>, <span class="hljs-property">@shape1</span>)
+      <span class="hljs-property">@model</span>.add(<span class="hljs-property">@shape</span>)
+
+  SCALE = <span class="hljs-number">400</span> / SIZE
+
+  <span class="hljs-comment"># This is our implementation of the HTMLActuator interface from the original</span>
+  <span class="hljs-comment"># 2048 library by https://github.com/gabrielecirulli.</span>
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SeenActuator</span></span>
+    constructor :<span class="hljs-function"> -&gt;</span>
+      <span class="hljs-comment"># Create a scene</span>
+      <span class="hljs-property">@scene</span> = <span class="hljs-keyword">new</span> seen.Scene
+        cullBackfaces    : <span class="hljs-literal">false</span>
+        fractionalPoints : <span class="hljs-literal">true</span>
+        model            : <span class="hljs-keyword">new</span> seen.Model().scale(SCALE).rotx(-<span class="hljs-number">0.5</span>)
+        viewport         : seen.Viewports.center(<span class="hljs-number">900</span>, <span class="hljs-number">500</span>)
+
+      <span class="hljs-comment"># Add some lights</span>
+      <span class="hljs-property">@scene</span>.model.add seen.Lights.point
+        point     : seen.P(-<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>).multiply(<span class="hljs-number">8</span>)
+        intensity : <span class="hljs-number">0.0025</span>
+
+      <span class="hljs-property">@scene</span>.model.add seen.Lights.ambient
+        intensity : <span class="hljs-number">0.0015</span>
+
+      <span class="hljs-comment"># Append a submodel to create a tree of transforms</span>
+      <span class="hljs-property">@subModel</span> = <span class="hljs-property">@scene</span>.model.append()
+        .translate(-SIZE/<span class="hljs-number">2</span>,-SIZE/<span class="hljs-number">2</span> + <span class="hljs-number">0.5</span>)
+        .bake() <span class="hljs-comment"># bake in transformation so that later .reset() will return to this state</span>
+
+      <span class="hljs-comment"># Create the shapes for the board</span>
+      [<span class="hljs-number">0.</span>..SIZE].map <span class="hljs-function"><span class="hljs-params">(x)</span> =&gt;</span> [<span class="hljs-number">0.</span>..SIZE].map <span class="hljs-function"><span class="hljs-params">(y)</span> =&gt;</span>
+        <span class="hljs-comment"># Light inside piece</span>
+        shape = seen.Shapes.rectangle(seen.P(<span class="hljs-number">0.05</span>, <span class="hljs-number">0.05</span>, -<span class="hljs-number">0.01</span>), seen.P(<span class="hljs-number">0.95</span>, <span class="hljs-number">0.95</span>, <span class="hljs-number">0.0</span>)).translate(x, y)
+        shape.fill <span class="hljs-keyword">new</span> seen.Material seen.Colors.hex <span class="hljs-string">'#c8bbb0'</span>
+        <span class="hljs-property">@subModel</span>.add(shape)
+
+        <span class="hljs-comment"># Background board</span>
+        shape = seen.Shapes.rectangle(seen.P(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, -<span class="hljs-number">0.4</span>), seen.P(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, -<span class="hljs-number">0.02</span>)).translate(x, y)
+        shape.fill <span class="hljs-keyword">new</span> seen.Material seen.Colors.hex <span class="hljs-string">'#bbada0'</span>
+        <span class="hljs-property">@subModel</span>.add(shape)
+
+      <span class="hljs-comment"># Create a context with a fill layer and the scene layer</span>
+      <span class="hljs-property">@context</span> = seen.Context(<span class="hljs-string">'seen-canvas'</span>)
+      <span class="hljs-property">@context</span>.layer(<span class="hljs-keyword">new</span> seen.FillLayer(<span class="hljs-number">900</span>, <span class="hljs-number">500</span>, <span class="hljs-string">'#faf8ef'</span>))
+      <span class="hljs-property">@context</span>.sceneLayer(<span class="hljs-property">@scene</span>)
+
+      <span class="hljs-comment"># Slowly rock the board back and forth, cuz why not? It is THREEEE-DEEEEE!!!</span>
+      doRotate = <span class="hljs-literal">true</span>
+      animator = <span class="hljs-property">@context</span>.animate().start()
+      animator.onBefore <span class="hljs-function"><span class="hljs-params">(t, dt)</span> =&gt;</span>
+        <span class="hljs-property">@subModel</span>.reset()
+        <span class="hljs-keyword">if</span> doRotate <span class="hljs-keyword">then</span> <span class="hljs-property">@subModel</span>.rotz(Math.sin(t*<span class="hljs-number">3e-4</span>) / <span class="hljs-number">10</span>)
+
+      $(<span class="hljs-string">'#toggle-nausea'</span>).click<span class="hljs-function"> =&gt;</span> doRotate = <span class="hljs-keyword">not</span> doRotate
+
+      <span class="hljs-comment"># Initialize the transition animator</span>
+      <span class="hljs-property">@transitions</span> = <span class="hljs-keyword">new</span> seen.TransitionAnimator().start()
+
+      <span class="hljs-comment"># Initialize game models</span>
+      <span class="hljs-property">@restartGame</span>()
+      <span class="hljs-property">@continueGame</span>()
+
+    <span class="hljs-comment"># We had to modify the 2048 game manager to invoke this method on restart.</span>
+    <span class="hljs-comment"># The original game assumes that we can rebuild the entire board on every</span>
+    <span class="hljs-comment"># actuate(). However, in our case, we must store the shapes between calls,</span>
+    <span class="hljs-comment"># so this method allows us to clean up when a game is restarted.</span>
+    restartGame :<span class="hljs-function"> -&gt;</span>
+      <span class="hljs-keyword">if</span> <span class="hljs-property">@gridModel</span>? <span class="hljs-keyword">then</span> <span class="hljs-property">@subModel</span>.remove(<span class="hljs-property">@gridModel</span>)
+      <span class="hljs-property">@gridModel</span> = <span class="hljs-property">@subModel</span>.append()
+      <span class="hljs-property">@grid</span> = <span class="hljs-property">@_emptyGridState</span>()
+
+    <span class="hljs-comment"># Invoked on a restart, retry, or page load.</span>
+    continueGame :<span class="hljs-function"> -&gt;</span>
+      $(<span class="hljs-string">'#game-message'</span>).text <span class="hljs-string">''</span>
+      $(<span class="hljs-string">'.retry-button'</span>).hide()
+      $(<span class="hljs-string">'.keep-playing-button'</span>).hide()
+      $(<span class="hljs-string">'.restart-button'</span>).show()
+
+    <span class="hljs-comment"># Invoked on user interaction / game state update</span>
+    actuate : <span class="hljs-function"><span class="hljs-params">(grid, metadata)</span> -&gt;</span>
+
+      nextGrid = <span class="hljs-property">@_emptyGridState</span>()
+
+      <span class="hljs-keyword">for</span> column <span class="hljs-keyword">in</span> grid.cells
+        <span class="hljs-keyword">for</span> tile <span class="hljs-keyword">in</span> column
+          <span class="hljs-keyword">continue</span> <span class="hljs-keyword">unless</span> tile?
+
+          <span class="hljs-comment"># Make a copy of the tile so we can store it inside the transition</span>
+          tile = _.clone tile
+
+          <span class="hljs-comment"># Transition an exiting tile that has moved</span>
+          <span class="hljs-keyword">if</span> tile.previousPosition?
+            nextGrid[tile.x][tile.y] = shape = <span class="hljs-property">@_getShape</span>(tile.previousPosition)
+            <span class="hljs-property">@transitions</span>.add <span class="hljs-keyword">new</span> MoveTransition {model : <span class="hljs-property">@gridModel</span>, tile, shape}
+
+          <span class="hljs-comment"># Transition two existing tiles merged into one</span>
+          <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> tile.mergedFrom?
+            shape0 = <span class="hljs-property">@_getShape</span>(tile.mergedFrom[<span class="hljs-number">0</span>].previousPosition)
+            shape1 = <span class="hljs-property">@_getShape</span>(tile.mergedFrom[<span class="hljs-number">1</span>].previousPosition)
+            nextGrid[tile.x][tile.y] = shape = SHAPE_FACTORY(tile.value)
+            <span class="hljs-property">@transitions</span>.add <span class="hljs-keyword">new</span> MergeTransition {model : <span class="hljs-property">@gridModel</span>, tile, shape, shape0, shape1}
+
+          <span class="hljs-comment"># Transition a new tile</span>
+          <span class="hljs-keyword">else</span>
+            nextGrid[tile.x][tile.y] = shape = SHAPE_FACTORY(tile.value)
+            <span class="hljs-property">@transitions</span>.add <span class="hljs-keyword">new</span> NewTransition {model : <span class="hljs-property">@gridModel</span>, tile, shape}
+
+      <span class="hljs-property">@grid</span> = nextGrid
+      <span class="hljs-property">@transitions</span>.keyframe()
+
+      <span class="hljs-comment"># Update score and game end conditions</span>
+      $(<span class="hljs-string">'#score'</span>).text metadata.score
+
+      <span class="hljs-keyword">if</span> metadata.terminated
+        <span class="hljs-keyword">if</span> metadata.over
+          $(<span class="hljs-string">'#game-message'</span>).text <span class="hljs-string">'You lose =('</span>
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> metadata.won
+          $(<span class="hljs-string">'#game-message'</span>).text <span class="hljs-string">'You WIN! =D'</span>
+          $(<span class="hljs-string">'.keep-playing-button'</span>).show()
+
+    <span class="hljs-comment"># Returns a 2-dimensional array for storing game tile shapes</span>
+    _emptyGridState :<span class="hljs-function"> -&gt;</span> [<span class="hljs-number">0.</span>..SIZE].map <span class="hljs-function"><span class="hljs-params">(x)</span> -&gt;</span> [<span class="hljs-number">0.</span>..SIZE].map <span class="hljs-function"><span class="hljs-params">(y)</span> -&gt;</span> <span class="hljs-literal">null</span>
+
+    <span class="hljs-comment"># Return the seen.Shape at the coordinates in the current grid state</span>
+    _getShape : <span class="hljs-function"><span class="hljs-params">(position)</span> -&gt;</span> <span class="hljs-property">@grid</span>[position.x][position.y]
+
+  <span class="hljs-comment"># Initialize the 2048 game manager</span>
+  <span class="hljs-built_in">window</span>.requestAnimationFrame <span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span>
+    <span class="hljs-keyword">new</span> GameManager(SIZE, KeyboardInputManager, SeenActuator, LocalStorageManager)
+
+</code></pre>
+<script type="text/javascript">
+  var view = document.getElementById('code-view');
+  var code = document.getElementById('code');
+  view.innerHTML = code.innerHTML;
+  hljs.highlightBlock(view);
+</script>
+    
+  </div>
+
+
+</body></html>
