@@ -1,9 +1,8 @@
 var co = require('co');
 
-co(function *(){
-  // yield any promise
-  var result = yield Promise.resolve(true);
-}).catch(onerror);
+function onerror(err) {
+  console.error('err: '+err.stack);
+}
 
 co(function *(){
   // resolve multiple promises in parallel
@@ -11,22 +10,35 @@ co(function *(){
   var b = Promise.resolve(2);
   var c = Promise.resolve(3);
   var res = yield [a, b, c];
-  console.log(res);
+  console.log('1: '+res);
   // => [1, 2, 3]
 }).catch(onerror);
 
-// errors can be try/catched
 co(function *(){
   try {
     yield Promise.reject(new Error('boom'));
   } catch (err) {
-    console.error(err.message); // "boom"
+    console.error('2: '+err.message); // "boom"
  }
 }).catch(onerror);
 
-function onerror(err) {
-  // log any uncaught errors
-  // co will not throw any errors you do not handle!!!
-  // HANDLE ALL YOUR ERRORS!!!
-  console.error(err.stack);
-}
+var fn = co.wrap(function* (val) {
+  return yield Promise.resolve(val);
+});
+
+fn('some string : ').then(function (val) {
+	console.log('3: '+val)
+});
+
+var fn = co.wrap(function* (val) {
+  var a = Promise.resolve(val+'first');
+  var b = Promise.resolve(val+'second');
+  var c = Promise.resolve(val+'third');
+  var res = yield [a, b, c];
+  console.log('4: '+res);
+  return res
+});
+
+fn('some string : ').then(function (val) {
+	console.log('5: '+val)
+});
