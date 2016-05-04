@@ -8,6 +8,14 @@ var max = Math.max.apply(null, numbers);
 var min = Math.min.apply(null, numbers);
 console.log(max,min)
 
+var max = Math.max.call(null, numbers[0],numbers[1],numbers[2],numbers[3],numbers[4]); 
+var min = Math.min.call(null, numbers[0],numbers[1],numbers[2],numbers[3],numbers[4]);
+console.log(max,min)
+
+var max = Math.max.bind(null)(numbers[0],numbers[1],numbers[2],numbers[3],numbers[4]); 
+var min = Math.min.bind(null)(numbers[0],numbers[1],numbers[2],numbers[3],numbers[4]);
+console.log(max,min)
+
 var max = Math.max(numbers[0],numbers[1],numbers[2],numbers[3],numbers[4]); 
 var min = Math.min(numbers[0],numbers[1],numbers[2],numbers[3],numbers[4]);
 console.log(max,min)
