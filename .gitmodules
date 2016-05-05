@@ -1,0 +1,3 @@
+[submodule "react__/ruanyifeng"]
+	path = react__/ruanyifeng
+	url = https://github.com/ruanyf/react-demos.git
