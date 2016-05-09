@@ -1,13 +1,18 @@
 var redis = require("redis")
   , client = redis.createClient();
 
-client.hkeys('*',function(err, replies){
-	console.log(replies)
-	replies.forEach(function (reply, i) {
-		client.del('*', reply, redis.print)
-	});
-})
+client.keys('*',function(err, ks){
+	console.log(ks)
+	ks.forEach(function (k, i) {
+		console.log(k)
+		client.hkeys('socket',function(err, replies){
+			replies.forEach(function (reply, i) {
+				client.hdel('socket', reply, redis.print)
+			});
+		})
+	})
 
+})
 
 
 
