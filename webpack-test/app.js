@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-app.use('/src', express.static('./client/src'));
+app.use('/js', express.static('./client/dist'));
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/client/index.html');
 });
