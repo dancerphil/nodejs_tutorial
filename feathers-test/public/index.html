@@ -20,6 +20,8 @@
       app.configure(feathers.socketio(socket))
       var messages = app.service('messages')
       messages.on('created', function(message) {
+        var messageList = document.getElementById('messageList')
+        messageList.innerHTML += '<h4>'+ message.text + '</h4>'
         console.log("Message sent:",message)
       })
       function sendMessage() {
