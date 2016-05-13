@@ -29,6 +29,19 @@ var redis = require("redis")
 // 		}
 // 	});
 
-client.hgetall("test", function (err, replies) {
-	console.log(replies)
+// client.hgetall("test", function (err, replies) {
+// 	for(k in replies){
+// 		console.log(k,replies[k])
+// 	}
+// })
+
+client.hgetall("socket", function (err, replies) {
+	for(k in replies){
+		console.log(k)
+		console.log('----')
+		console.log(replies[k])
+		console.log('------------')
+	}
 })
+
+client.quit()
