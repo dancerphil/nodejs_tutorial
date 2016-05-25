@@ -1,8 +1,8 @@
 # 设置基础镜像
-FROM yubuntu
+FROM ubuntu
 
 # 如果上个步骤已经更新软件源，这步可以忽略
-RUN apt-get update
+RUN apt-get update --fix-missing
 
 # 安装 NodeJS 和 npm
 RUN apt-get install -y nodejs npm
