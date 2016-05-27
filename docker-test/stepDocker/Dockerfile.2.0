@@ -1,0 +1,5 @@
+# 设置基础镜像
+FROM d1
+
+# 安装 wget
+RUN apt-get install wget

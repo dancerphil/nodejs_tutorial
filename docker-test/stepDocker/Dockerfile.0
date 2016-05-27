@@ -1,0 +1,5 @@
+# 设置基础镜像
+FROM ubuntu
+
+# 更新
+RUN apt-get update

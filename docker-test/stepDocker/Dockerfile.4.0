@@ -1,0 +1,5 @@
+# 设置基础镜像
+FROM d2x
+
+# 安装 socket-node
+RUN git
