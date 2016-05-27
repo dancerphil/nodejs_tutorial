@@ -1,0 +1,5 @@
+# 设置基础镜像
+FROM s2
+
+# 由于 apt-get 下载的 Node 实际上是 nodejs，所以要创建一个 node 的快捷方式
+RUN ln -s /usr/bin/nodejs /usr/bin/node

@@ -1,0 +1,6 @@
+# 设置基础镜像
+FROM s8
+
+# 添加启动脚本
+ADD start.sh /tmp/
+RUN chmod +x /tmp/start.sh
