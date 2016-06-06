@@ -1,5 +1,5 @@
 # 设置基础镜像
-FROM d2x
+FROM d31
 
-# 安装 socket-node
-RUN git
+# 设置工作目录
+WORKDIR /srv/socket-node

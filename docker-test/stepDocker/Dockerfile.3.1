@@ -3,3 +3,5 @@ FROM d30
 
 # 运行 redis
 RUN redis-server /etc/redis/redis.conf
+
+# 附注：现在想来，这一句应该放在 start.sh，docker 并不会保存 redis 开启的状态
