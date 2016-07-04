@@ -29,7 +29,7 @@ var useTheme = function (x){
             }
         },
         tooltip: {
-            backgroundColor: '#FFFFFF',
+            // backgroundColor: '#FFFFFF',
         },
 
     };

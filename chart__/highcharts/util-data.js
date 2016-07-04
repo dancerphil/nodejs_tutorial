@@ -32,89 +32,172 @@
 //         }]
 //     });
 // }
-function h(x,y){
-  Highcharts.chart('container', {
-    // $('#container').highcharts({
-        chart: {
-          type: 'area',
-          animation: false,
-          // backgroundColor: 'rgba(0,0,0,0)'
-        },
+
+// function h(x,y){
+//   Highcharts.chart('container', {
+//     // $('#container').highcharts({
+//         chart: {
+//           type: 'area',
+//           animation: false,
+//           // backgroundColor: 'rgba(0,0,0,0)'
+//         },
+//         title: { text: '' },
+//         credits: { enabled: false },
+//         plotOptions: {
+//           area: {
+//             animation: false,
+//             dataLabels: {
+//               enabled: true,
+//               formatter: function () {
+//                 var y = this.y
+//                 var code = this.point.code
+//                 return `
+//                   <div class='chart-label'>
+//                     <div class='wi wi-${code}')></div>
+//                     <div class='temp'>${y}℃</div>
+//                   </div>
+//                 `
+//               },
+//               useHTML: true,
+//               align: 'center',
+//               verticalAlign: 'bottom',
+//               reserveSpace: true,
+//               overflow: 'none',
+//               crop: false,
+//               y: -5,
+//               style: {
+//                 // fontWeight: 'normal',
+//                 // color: '#606060'
+//               }
+//             },
+//             // color: '#FF0000',
+//             // lineWidth: 1,
+//             fillColor: {
+//               // linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
+//               // stops: [
+//               //   [0, Highcharts.Color('#FF4B02').setOpacity(0.4).get('rgba')],
+//               //   [1, Highcharts.Color('#FF4B02').setOpacity(0.1).get('rgba')]
+//               // ]
+//             },
+//             marker: {
+//               // radius: 4,
+//               // lineColor: '#fff',
+//               // lineWidth: 1
+//             }
+//           }
+//         },
+//         tooltip: {
+//           // backgroundColor: '#FFFFFF',
+//           pointFormat: '{series.name}: <b>{point.y}</b><br/>天气: <b>{point.text}</b>',
+//           valueSuffix: '℃',
+//           borderWidth: 0,
+//           shape: 'square',
+//           style: {
+//             padding: 0
+//           },
+//           useHTML: true
+//         },
+//         xAxis: {
+//           categories: x,
+//           crosshair: false,
+//           tickLength: 0,
+//           tickWidth: 1,
+//           labels: { autoRotation: false },
+//           lineWidth: 0
+//         },
+//         yAxis: {
+//           min: 1 - 1,
+//           max: 9 + (9 - 1 + 1) * 0.7,
+//           gridLineWidth: 0,
+//           title: { text: '' },
+//           labels: { enabled: false }
+//         },
+//         series: [{
+//           name: '温度',
+//           data: y
+//         }],
+//         legend: { enabled: false }
+//     });
+// }
+
+function h(x,y) {
+    Highcharts.chart('container', {
+        chart: { type: 'area', animation: false, backgroundColor: 'rgba(0,0,0,0)' },
         title: { text: '' },
         credits: { enabled: false },
         plotOptions: {
-          area: {
-            animation: false,
-            dataLabels: {
-              enabled: true,
-              formatter: function () {
-                var y = this.y
-                var code = this.point.code
-                return `
+            area: {
+                animation: false,
+                dataLabels: {
+                    enabled: true,
+                    formatter: function () {
+                        var y = this.y
+                        var code = this.point.code
+                        return `
                   <div class='chart-label'>
                     <div class='wi wi-${code}')></div>
                     <div class='temp'>${y}℃</div>
                   </div>
                 `
-              },
-              useHTML: true,
-              align: 'center',
-              verticalAlign: 'bottom',
-              reserveSpace: true,
-              overflow: 'none',
-              crop: false,
-              y: -5,
-              style: {
-                // fontWeight: 'normal',
-                // color: '#606060'
-              }
-            },
-            // color: '#FF0000',
-            // lineWidth: 1,
-            fillColor: {
-              // linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
-              // stops: [
-              //   [0, Highcharts.Color('#FF4B02').setOpacity(0.4).get('rgba')],
-              //   [1, Highcharts.Color('#FF4B02').setOpacity(0.1).get('rgba')]
-              // ]
-            },
-            marker: {
-              // radius: 4,
-              // lineColor: '#fff',
-              // lineWidth: 1
+                    },
+                    useHTML: true,
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    reserveSpace: true,
+                    overflow: 'none',
+                    crop: false,
+                    y: -5,
+                    style: {
+                        fontWeight: 'normal',
+                        color: '#606060'
+                    }
+                },
+                color: '#0F0',
+                lineWidth: 1,
+                fillColor: {
+                    linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
+                    stops: [
+                        [0, Highcharts.Color('#FF4B02').setOpacity(0.4).get('rgba')],
+                        [1, Highcharts.Color('#FF4B02').setOpacity(0.1).get('rgba')]
+                    ]
+                },
+                marker: {
+                    radius: 4,
+                    lineColor: '#fff',
+                    lineWidth: 1
+                }
             }
-          }
         },
         tooltip: {
-          // backgroundColor: '#FFFFFF',
-          pointFormat: '{series.name}: <b>{point.y}</b><br/>天气: <b>{point.text}</b>',
-          valueSuffix: '℃',
-          borderWidth: 0,
-          shape: 'square',
-          style: {
-            padding: 0
-          },
-          useHTML: true
+            backgroundColor: '#FFFFFF',
+            pointFormat: '{series.name}: <b>{point.y}</b><br/>天气: <b>{point.text}</b>',
+            valueSuffix: '℃',
+            borderWidth: 0,
+            shape: 'square',
+            style: {
+                padding: 0
+            },
+            useHTML: true
         },
         xAxis: {
-          categories: x,
-          crosshair: false,
-          tickLength: 0,
-          tickWidth: 1,
-          labels: { autoRotation: false },
-          lineWidth: 0
+            categories: x,
+            crosshair: false,
+            tickLength: 0,
+            tickWidth: 1,
+            labels: { autoRotation: false },
+            lineWidth: 0
         },
         yAxis: {
-          min: 1 - 1,
-          max: 9 + (9 - 1 + 1) * 0.7,
-          gridLineWidth: 0,
-          title: { text: '' },
-          labels: { enabled: false }
+            min: 1 - 1,
+            max: 9 + (9 - 1 + 1) * 0.7,
+            gridLineWidth: 0,
+            title: { text: '' },
+            labels: { enabled: false }
         },
         series: [{
-          name: '温度',
-          data: y
+            name: '温度',
+            data: y
         }],
         legend: { enabled: false }
-    });
+    })
 }
