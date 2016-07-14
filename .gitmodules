@@ -4,3 +4,6 @@
 [submodule "redux-test/redux-devtools"]
 	path = redux-test/redux-devtools
 	url = https://github.com/gaearon/redux-devtools.git
+[submodule "electron-api-demos"]
+	path = electron-api-demos
+	url = https://github.com/electron/electron-api-demos.git
