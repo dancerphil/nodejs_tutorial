@@ -1,0 +1,88 @@
+#thinkpage_icon {
+	position: absolute;
+
+	min-width:86px;
+	height:52px;
+	border-radius: 4px;
+	float: right;
+
+	opacity: 1;
+	transition:  min-width .3s, height .3s;
+
+	background-color: rgba(0,0,0,0.5);
+}
+#thinkpage_icon:hover
+{
+	min-width:280px;
+	height:480px;
+}
+
+
+#small {
+	/*display: block;*/
+	opacity:1;
+	transition: opacity .5s .2s; /* 进入时触发 */
+}
+#thinkpage_icon:hover #small{
+	display: none;
+	pointer-events:none;
+	padding: 4px;
+	opacity:0;
+	transition: opacity .2s; /* 退出时触发 */
+}
+#tp-front {
+	position: absolute;
+	opacity: 0;
+
+	border-radius: 4px;
+	float: right;
+
+	min-width:280px;
+	height:480px;
+
+	pointer-events:none;
+	/*transition: opacity .3s; !* 退出时触发 *!*/
+}
+#thinkpage_icon:hover #tp-front{
+	display: block;
+	pointer-events:auto;
+	opacity:1;
+	transition: opacity .3s .2s; /* 进入时触发 */
+}
+#tp-back {
+	pointer-events:none;
+
+	position: absolute;
+	opacity: 0;
+
+	border-radius: 4px;
+	float: right;
+
+	min-width:280px;
+	height:480px;
+	background-color: #923e00;
+
+	/*transition: opacity .3s;*/
+}
+
+@keyframes bar {
+	0% {
+		/*transform: rotateZ(0deg) rotateX(0deg);*/
+		transform: rotateY(0deg);
+	}
+	75%,100% {
+		/*transform: rotateZ(360deg) rotateX(360deg);*/
+		transform: rotateY(180deg);
+	}
+}
+
+@keyframes bar-sub {
+	0% {
+		/*transform: rotateZ(0deg) rotateX(0deg);*/
+		transform: rotateY(-180deg);
+	}
+	75%,100% {
+		/*transform: rotateZ(360deg) rotateX(360deg);*/
+		transform: rotateY(0deg);
+	}
+}

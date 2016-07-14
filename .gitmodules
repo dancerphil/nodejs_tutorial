@@ -1,3 +1,6 @@
 [submodule "react__/ruanyifeng"]
 	path = react__/ruanyifeng
 	url = https://github.com/ruanyf/react-demos.git
+[submodule "redux-test/redux-devtools"]
+	path = redux-test/redux-devtools
+	url = https://github.com/gaearon/redux-devtools.git
