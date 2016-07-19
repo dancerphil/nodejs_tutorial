@@ -1,0 +1,5 @@
+#ruler {  
+    visibility: hidden;  
+    white-space: nowrap;  
+    font-size: 24px;  
+}  
