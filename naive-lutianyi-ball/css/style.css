@@ -1,0 +1,8 @@
+#canvas {
+  display: block;
+  margin: 0 auto;
+  background: #333;
+}
+#playground {
+  background: #444;
+}
