@@ -1,0 +1,15 @@
+<html> 
+ <head> 
+     <title>postMessage child page</title> 
+     <script type="text/JavaScript"> 
+         //event 参数中有data属性，就是父窗口发来的数据
+         window.addEventListener('message', function(event) {
+             //显示数据
+             document.body.innerHTML += event.data;
+         }, false);
+     </script> 
+ </head> 
+ <body> 
+     init
+ </body> 
+ </html>

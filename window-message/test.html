@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>postMessage</title>
+    <script type="text/javascript">
+    function sendMsg(){
+        //通过postMessage向子窗口发送数据
+        document.getElementById('child').contentWindow.postMessage(document.getElementById('message').value,'/');
+    }
+    </script>
+</head>
+<body>
+    <iframe src="parent.html" id="child"></iframe>
+    <input type="text" id="message">
+    <input type="button" value="sent msg" onclick="sendMsg()">
+</body>
+</html>
